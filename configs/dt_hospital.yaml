@@ -1,0 +1,78 @@
+# Decision Transformer Hospital Configuration
+# Optimized for MIMIC-III ICU trajectory learning
+
+# Model Architecture
+state_dim: 17                    # State dimension (vitals + demographics)
+action_dim: 9                    # Action dimension (interventions)
+d_model: 256                     # Larger model for complex medical decisions
+n_heads: 8                       # Number of attention heads
+n_layers: 4                      # More layers for medical reasoning
+max_length: 200                  # Longer sequences for ICU stays
+dropout: 0.15                    # Higher dropout for regularization
+
+# Training Configuration
+learning_rate: 5e-5              # Lower learning rate for stability
+batch_size: 16                   # Smaller batch size for medical data
+num_epochs: 200                  # More epochs for medical learning
+weight_decay: 1e-4               # Higher weight decay
+grad_clip_norm: 0.5              # Stronger gradient clipping
+
+# Medical-Specific Configuration
+safety_weight: 0.1               # Weight for safety loss term
+conservative_factor: 0.8         # Conservative action scaling
+reward_shaping: true             # Whether to use reward shaping
+mortality_penalty: -10.0         # Penalty for mortality predictions
+
+# Data Configuration
+normalize: true                  # Always normalize medical data
+train_split: 0.8                 # 80/20 train/test split
+shuffle: true                    # Shuffle for generalization
+augment_data: true               # Whether to use data augmentation
+augment_prob: 0.1                # Probability of augmentation
+
+# Medical Evaluation Configuration
+eval_frequency: 5                # Evaluate more frequently
+save_frequency: 5                # Save checkpoints more often
+early_stopping_patience: 30      # More patience for medical learning
+
+# Safety and Validation
+safety_threshold: 0.05           # Safety violation threshold
+validation_metrics:              # Medical-specific metrics
+  - mortality_rate
+  - length_of_stay
+  - readmission_rate
+  - adverse_events
+
+# Logging Configuration
+use_wandb: true                  # Use W&B for medical experiments
+project_name: "decision-transformer-medical"
+log_level: "INFO"
+save_predictions: true
+log_medical_metrics: true        # Log medical-specific metrics
+
+# Hardware Configuration
+device: "cuda"                   # Use GPU for medical training
+num_workers: 8                   # More workers for medical data
+pin_memory: true
+mixed_precision: true            # Use mixed precision for efficiency
+
+# Model Checkpointing
+checkpoint_dir: "checkpoints/medical"
+best_model_name: "best_medical_model.pt"
+last_model_name: "last_medical_model.pt"
+backup_frequency: 20             # Backup every 20 epochs
+
+# Medical Data Configuration
+min_trajectory_length: 10        # Minimum ICU stay length
+max_trajectory_length: 500       # Maximum ICU stay length
+vital_signs_only: false          # Include all features, not just vitals
+include_lab_values: true         # Include laboratory results
+include_medications: true        # Include medication history
+include_procedures: true         # Include procedure history
+
+# Reward Configuration
+survival_reward: 1.0             # Reward for survival
+mortality_reward: -1.0           # Reward for mortality
+discharge_reward: 0.5            # Reward for discharge
+complication_penalty: -0.5       # Penalty for complications
+length_of_stay_penalty: -0.01    # Small penalty for longer stays
